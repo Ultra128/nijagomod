@@ -1,0 +1,32 @@
+yaml
+name: Build Mod
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code auschecken
+        uses: actions/checkout@v4
+
+      - name: Java 17 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Gradle ausführbar machen
+        run: chmod +x gradlew
+
+      - name: Mod bauen
+        run: ./gradlew build --no-daemon
+
+      - name: Fertige JAR hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: ninjagomod-jar
+          path: build/libs/*.jar
